@@ -1,0 +1,13 @@
+# Target labels
+ ELF2UF2Build
+# Source files and their labels
+/home/gvelardez/tesis/simo_freertos/CMakeFiles/ELF2UF2Build
+/home/gvelardez/tesis/simo_freertos/CMakeFiles/ELF2UF2Build.rule
+/home/gvelardez/tesis/simo_freertos/CMakeFiles/ELF2UF2Build-complete.rule
+/home/gvelardez/tesis/simo_freertos/elf2uf2/src/ELF2UF2Build-stamp/ELF2UF2Build-build.rule
+/home/gvelardez/tesis/simo_freertos/elf2uf2/src/ELF2UF2Build-stamp/ELF2UF2Build-configure.rule
+/home/gvelardez/tesis/simo_freertos/elf2uf2/src/ELF2UF2Build-stamp/ELF2UF2Build-download.rule
+/home/gvelardez/tesis/simo_freertos/elf2uf2/src/ELF2UF2Build-stamp/ELF2UF2Build-install.rule
+/home/gvelardez/tesis/simo_freertos/elf2uf2/src/ELF2UF2Build-stamp/ELF2UF2Build-mkdir.rule
+/home/gvelardez/tesis/simo_freertos/elf2uf2/src/ELF2UF2Build-stamp/ELF2UF2Build-patch.rule
+/home/gvelardez/tesis/simo_freertos/elf2uf2/src/ELF2UF2Build-stamp/ELF2UF2Build-update.rule

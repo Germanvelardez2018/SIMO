@@ -10,6 +10,7 @@ pico_sdk_init()
 
 add_executable(simo
     src/main.c
+	src/uart.c
 )
 
 FILE(GLOB FreeRTOS_src FreeRTOS-Kernel/*.c)
@@ -28,7 +29,8 @@ target_include_directories( FreeRTOS PUBLIC
 
 target_link_libraries( simo
 	pico_stdlib 
-	hardware_gpio 
+	hardware_gpio
+	hardware_uart 
 	FreeRTOS
 	)
 
