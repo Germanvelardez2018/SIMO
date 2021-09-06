@@ -9,8 +9,9 @@ pico_sdk_init()
 
 
 add_executable(simo
-    src/main.c
-	src/uart.c
+    core/src/main.c
+	core/src/uart.c
+	core/src/timer.c
 )
 
 FILE(GLOB FreeRTOS_src FreeRTOS-Kernel/*.c)
@@ -23,7 +24,7 @@ add_library( FreeRTOS STATIC
 
 target_include_directories( FreeRTOS PUBLIC
 		FreeRTOS-Kernel/include
-		include/
+		core/include/
 		FreeRTOS-Kernel/portable/GCC/ARM_CM0
 	)
 
