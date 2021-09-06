@@ -33,16 +33,16 @@ void deinit_simo_uart(simo_uart_instance* instance)
 
 
 
-void write_simo_uart(simo_uart_instance* instance,uint8_t* buffer, int8_t buffer_len)
+void write_simo_uart(simo_uart_instance* instance,int8_t* buffer, uint16_t buffer_len)
 {
-   return uart_write_blocking(instance->uart,buffer,buffer_len);
+    return   uart_write_blocking(instance->uart,buffer,buffer_len);
    
 }
 
 
-void read_simo_uart(simo_uart_instance* instance,uint8_t* buffer,int8_t buffer_len)
+void read_simo_uart(simo_uart_instance* instance,int8_t* buffer,uint16_t buffer_len)
 {
-    return   uart_read_blocking(instance->uart,buffer,buffer_len);
+    return uart_read_blocking(instance->uart,buffer,buffer_len);
 
 }
 
@@ -50,7 +50,7 @@ void read_simo_uart(simo_uart_instance* instance,uint8_t* buffer,int8_t buffer_l
 
 
 
-uint read_simo_uart_until(simo_uart_instance* instance,int8_t* buffer,int16_t len_max,char end_char)
+uint read_simo_uart_until(simo_uart_instance* instance,int8_t* buffer,uint16_t len_max,char end_char)
 {
     uint counter=0;
     uint8_t c; 

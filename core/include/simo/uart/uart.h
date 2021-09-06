@@ -10,20 +10,44 @@
 #include "simo/core.h"
 #include "hardware/uart.h"
 
-#if RASPBERRY_PICO == 1
-#define N_UART 2 //microcontroler is RASPBERRY PI PICO
-#define RX_UART0 1
-#define TX_UART0 0
-#define UART0 uart0
+
+
+
+#ifndef _SIMO_UART_H
+#define _SIMO_UART_H
+
+/*! Numero de UART del dispositivo */
+
+#define N_UART 2         
+
+/*!  UART0 GPIOS: TX: 1, RX: 2      opcionalmente    TX: 12, RX:13*/
+
+#define UART0                   uart0
+#define UART0_TX                1
+#define UART0_TX_OPTIONAL       12
+#define UART0_RX                2
+#define UART0_RX_OPTIONAL       13
+
+
+
+/*!  *    UART0 GPIOS: TX: 4, RX: 5      opcionalmente    TX: 8, RX: 9 */
 #define UART1 uart1
-#define BUFFER  256
-#else
-#define N_UART 3 // microcontroler is STM32F103C8T6
-#endif
+#define UART1_TX                4
+#define UART1_TX_OPTIONAL       8
+#define UART1_RX                5
+#define UART1_RX_OPTIONAL       9
+
+/*! Buffer utilizado para lecturas mediante rutinas de interrupcion */
+
+#define IRQ_BUFFER  256
 
 
 
 
+/***
+ *    UART0: TX: 1, RX: 2      opcionalmente    TX: 12, RX:13
+ *    UART1: TX: 4, RX: 5      opcionalmente    TX: 8 , RX:9
+ */
 
 
 
@@ -74,35 +98,48 @@ void init_simo_uart(simo_uart_instance* instance);
 void deinit_simo_uart(simo_uart_instance* instance);
 
 
+
 /**
- * @brief   Inicia el hardware uart del sistema
+ * @brief   Envia por uart la cantidad  buffer_len de bytes almacenado en buffer
  * 
  * @param   simo_uart_instance*: instance
+ * @param   int8* buffer: Array de bytes a enviar
+ * @param   uint16_t buffer_len: tamaño de buffer a enviar
  * @return  None
  * 
  * **/
 
-void write_simo_uart(simo_uart_instance* instance,uint8_t* buffer, int8_t buffer_len);
-
-
-/**
- * @brief   Inicia el hardware uart del sistema
- * 
- * @param   simo_uart_instance*: instance
- * @return  None
- * 
- * **/
-
-void read_simo_uart(simo_uart_instance* instance,uint8_t* buffer,int8_t buffer_len);
+void write_simo_uart(simo_uart_instance* instance,int8_t* buffer, uint16_t buffer_len);
 
 
 
 /**
- * @brief   Inicia el hardware uart del sistema
+ * @brief   Lee una cantidad buffer_len de bytes del puerto uart y los almacena en buffer
  * 
  * @param   simo_uart_instance*: instance
+ * @param   int8_t* buffer: Array donde se guardan los bytes leidos
+ * @param   uint16_t buffer_len: Tamaño del buffer
  * @return  None
  * 
  * **/
 
-uint read_simo_uart_until(simo_uart_instance* instance,int8_t* buffer,int16_t len_max,char end_char);
+void read_simo_uart(simo_uart_instance* instance,int8_t* buffer,uint16_t buffer_len);
+
+
+
+/**
+ * @brief   Leer el puerto serie hasta detectar caracter  char_end
+ * 
+ * @param   simo_uart_instance* instance: Instancia de uart
+ * @param   int8* buffer: array donde se almacenaran los bytes recibidos
+ * @param   int16_t len_max: Numero maximo de bytes que se pueden recibir. Deben ser mayores o iguales al tamaño del buffer
+ * @param   char end_char: Simbolo que indica el final de lectura de esta funcion
+ * @return  uint8_t: Retorna el numero de bytes leidos
+ * 
+ * **/
+
+uint read_simo_uart_until(simo_uart_instance* instance,int8_t* buffer,uint16_t len_max,char end_char);
+
+#else
+#endif
+

@@ -10,6 +10,7 @@
 #include "task.h"
 
 #include "simo/timer/timer.h"
+#include "simo/comm/comm.h"
 #include <string.h>
 
 #define LED_PIN PICO_DEFAULT_LED_PIN
@@ -19,6 +20,7 @@
 
 
 
+static  simo_uart_instance interface ;
 
 
 
@@ -30,16 +32,19 @@
  * 
  * **/
 
-
-
 static void blink_funcion(void *param)
 {
 
     gpio_put(LED_PIN, GPIO_ON);
     vTaskDelay(100);
     gpio_put(LED_PIN, GPIO_OFF);
-    vTaskDelay(100);
+    vTaskDelay(200);
+   
+
 }
+
+
+
 
 
 
@@ -63,13 +68,22 @@ int main()
     gpio_set_dir(LED_PIN, GPIO_OUT);
 
 
+
+
+
+    
+
+
+
     static soft_timer_t timer_led;
 
     status_t res = create_timer_function(&timer_led, blink_funcion, 1000, 1);
 
     start_timer(&timer_led);
 
+    static comm_config_t comm_cfg;
 
+    comm_init(&(comm_cfg));
     vTaskStartScheduler();
 
     for (;;)

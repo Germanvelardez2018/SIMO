@@ -14,7 +14,7 @@
 #define   _SIMO_CORE_H
 
 
-/*! Modos de funcionamiento del sistema */
+    /*! Modos de funcionamiento del sistema */
 
     typedef enum
     {
@@ -41,6 +41,10 @@
     {
     char *buffer; //buffer del sistema
     } frame_t;
+
+
+
+
 
 
 
