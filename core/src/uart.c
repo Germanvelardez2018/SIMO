@@ -11,6 +11,13 @@
 
 
 
+#define IRQ_RX_UART             true    //Solo utilizaremos irq para recibir datos por uart
+#define IRQ_TX_UART             false
+
+
+
+
+
 
 
 
@@ -68,4 +75,29 @@ uint read_simo_uart_until(simo_uart_instance* instance,int8_t* buffer,uint16_t l
      buffer[counter]=0;  
     return counter;
 }
+
+
+
+
+void set_rx_interrupcion_handler(simo_uart_instance* instance,irq_rx_callback_t irq_function)
+{
+  //deshabilitamos el FIFO's
+  uart_set_fifo_enabled(instance->uart,false);
+
+
+  int UART_IRQ = instance->uart == uart0 ? UART0_IRQ : UART1_IRQ;
+  
+  irq_set_exclusive_handler(UART_IRQ,irq_function); 
+
+  irq_set_enabled(UART_IRQ, true);
+  
+
+  //Configuro la FIFO para rx
+  uart_set_irq_enables(instance->uart,IRQ_RX_UART,IRQ_TX_UART);        
+
+  //habilitamos nuevamente el fifo
+  uart_set_fifo_enabled(instance->uart,true);
+
+}
+
 

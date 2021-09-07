@@ -9,7 +9,7 @@
 
 #include "simo/core.h"
 #include "hardware/uart.h"
-
+#include "hardware/irq.h"
 
 
 
@@ -53,7 +53,7 @@
 
 
 
-//!< Estructura asociada a configuracion de hardware UART
+//! Estructura asociada a configuracion de hardware UART
 
 
 typedef struct
@@ -62,10 +62,14 @@ typedef struct
     uint8_t       rx_pin;    /*!<  Pin RX del UART */
     uint8_t       tx_pin;    /*!<  Pin TX del UART */
     uint          baudrate; /*!<   Baurate del puerto*/
-    bool          irq_en;   /*!<   Habilitar interrpciones */
+    bool          irq_rx;   /*!<   Habilita las interrpciones cuando el bufer fifo contenda datos*/
+    bool          irq_tx;  /*!<   Habilita las interrupciones cuando tenemos datos en el buffer fifo que necesitan ser enviados */
    
 } simo_uart_instance;
 
+
+
+typedef void (*irq_rx_callback_t)(void);
 
 
 /*
@@ -139,6 +143,22 @@ void read_simo_uart(simo_uart_instance* instance,int8_t* buffer,uint16_t buffer_
  * **/
 
 uint read_simo_uart_until(simo_uart_instance* instance,int8_t* buffer,uint16_t len_max,char end_char);
+
+
+
+/**
+ * @brief   Habilito las interrupciones para manejar la uart
+ * 
+ * @param   simo_uart_instance* instance: Instancia de uart
+ * @param   irq_rx_callback_t irq_function: callback de la irq
+ * @return  None
+ * 
+ * **/
+
+void set_rx_interrupcion_handler(simo_uart_instance* instance,irq_rx_callback_t irq_function);
+
+
+
 
 #else
 #endif

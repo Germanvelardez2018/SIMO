@@ -43,9 +43,6 @@ typedef struct
 
 
 
-
-
-
 /**
  * @brief   inicia comunicacion
  * 
@@ -68,3 +65,14 @@ void   comm_init(comm_config_t* config);
  * **/
 
 void   comm_deinit(comm_config_t* config);
+
+
+/**
+ * @brief   Tarea que procesa los elementos
+ * 
+ * @param   void* params: NO SE USA  
+ * @return  None
+ * 
+ * **/
+
+void comm_task(void* params);
