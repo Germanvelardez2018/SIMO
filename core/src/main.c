@@ -3,6 +3,8 @@
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
 
+#include "simo/wdt/wdt.h"
+
 #include "simo/uart/uart.h"
 
 #include "FreeRTOS.h"
@@ -12,15 +14,6 @@
 #include "simo/timer/timer.h"
 #include "simo/comm/comm.h"
 #include <string.h>
-
-#define LED_PIN PICO_DEFAULT_LED_PIN
-
-#define GPIO_ON 1
-#define GPIO_OFF 0
-
-
-
-static  simo_uart_instance interface ;
 
 
 
@@ -32,58 +25,41 @@ static  simo_uart_instance interface ;
  * 
  * **/
 
-static void blink_funcion(void *param)
+static void blink_funcion(void *param)  //funcion testigo, ya no hace blink
 {
 
-    gpio_put(LED_PIN, GPIO_ON);
-    vTaskDelay(100);
-    gpio_put(LED_PIN, GPIO_OFF);
-    vTaskDelay(200);
    
-
+    vTaskDelay(10);
+  
 }
 
 
-
-
-
-
-
- 
 /**
  * @brief   Inicio el programa principal del sistema
  * @param   None
  * @return  int 0: 
  * 
  * **/
-  
-
 
 int main()
 {
     stdio_init_all();
 
-  
-    gpio_init(LED_PIN);
-    gpio_set_dir(LED_PIN, GPIO_OUT);
-
-
-
-
-
     
 
 
+     static soft_timer_t timer_led;
 
-    static soft_timer_t timer_led;
+    status_t res = simo_timer_create(&timer_led, blink_funcion, 1000, 1);
 
-    status_t res = create_timer_function(&timer_led, blink_funcion, 1000, 1);
-
-    start_timer(&timer_led);
+    simo_timer_start(&timer_led);
 
     static comm_config_t comm_cfg;
 
-    comm_init(&(comm_cfg));
+    simo_comm_init(&(comm_cfg));
+
+    simo_wdt_init();
+
     vTaskStartScheduler();
 
     for (;;)

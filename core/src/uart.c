@@ -25,14 +25,14 @@
 
 
 
-void init_simo_uart(simo_uart_instance* instance)
+void simo_uart_init(simo_uart_instance* instance)
 {
     uart_init(instance->uart,instance->baudrate);
     gpio_set_function(instance->rx_pin,GPIO_FUNC_UART);
     gpio_set_function(instance->tx_pin,GPIO_FUNC_UART);    
 }
 
-void deinit_simo_uart(simo_uart_instance* instance)
+void simo_uart_deinit(simo_uart_instance* instance)
 {
     return  uart_deinit(instance->uart);
 }
@@ -40,14 +40,14 @@ void deinit_simo_uart(simo_uart_instance* instance)
 
 
 
-void write_simo_uart(simo_uart_instance* instance,int8_t* buffer, uint16_t buffer_len)
+void simo_uart_write(simo_uart_instance* instance,int8_t* buffer, uint16_t buffer_len)
 {
     return   uart_write_blocking(instance->uart,buffer,buffer_len);
    
 }
 
 
-void read_simo_uart(simo_uart_instance* instance,int8_t* buffer,uint16_t buffer_len)
+void simo_uart_read(simo_uart_instance* instance,int8_t* buffer,uint16_t buffer_len)
 {
     return uart_read_blocking(instance->uart,buffer,buffer_len);
 
@@ -57,7 +57,7 @@ void read_simo_uart(simo_uart_instance* instance,int8_t* buffer,uint16_t buffer_
 
 
 
-uint read_simo_uart_until(simo_uart_instance* instance,int8_t* buffer,uint16_t len_max,char end_char)
+uint simo_uart_read_until(simo_uart_instance* instance,int8_t* buffer,uint16_t len_max,char end_char)
 {
     uint counter=0;
     uint8_t c; 
@@ -79,7 +79,7 @@ uint read_simo_uart_until(simo_uart_instance* instance,int8_t* buffer,uint16_t l
 
 
 
-void set_rx_interrupcion_handler(simo_uart_instance* instance,irq_rx_callback_t irq_function)
+void simo_set_rx_interrupcion_handler(simo_uart_instance* instance,irq_rx_callback_t irq_function)
 {
   //deshabilitamos el FIFO's
   uart_set_fifo_enabled(instance->uart,false);

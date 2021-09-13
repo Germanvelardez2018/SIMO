@@ -1,7 +1,24 @@
 {
-    "files.associations": {
-        "core.h": "c",
-        "uart.h": "c",
-        "comm.h": "c"
-    }
-}
+    "cmake.configureOnOpen": false,
+    "cmake.statusbar.advanced": {
+      "debug" : {
+        "visibility": "hidden"
+                },    "launch" : {
+        "visibility": "hidden"
+                 },
+      "build" : {
+        "visibility": "hidden"
+                 },
+      "buildTarget" : {
+        "visibility": "hidden"
+                 },
+      },
+      "files.associations": {
+        "stdlib.h": "c",
+        "string.h": "c",
+        "freertosconfig.h": "c",
+        "wdt.h": "c",
+        "watchdog.h": "c"
+      },
+  }
+  

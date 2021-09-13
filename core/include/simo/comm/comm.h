@@ -51,7 +51,7 @@ typedef struct
  * 
  * **/
 
-void   comm_init(comm_config_t* config);
+void   simo_comm_init(comm_config_t* config);
 
 
 
@@ -64,7 +64,7 @@ void   comm_init(comm_config_t* config);
  * 
  * **/
 
-void   comm_deinit(comm_config_t* config);
+void   simo_comm_deinit(comm_config_t* config);
 
 
 /**
@@ -75,4 +75,4 @@ void   comm_deinit(comm_config_t* config);
  * 
  * **/
 
-void comm_task(void* params);
+void simo_comm_task(void* params);

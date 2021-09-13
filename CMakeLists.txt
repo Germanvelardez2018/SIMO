@@ -13,6 +13,7 @@ add_executable(simo
 	core/src/uart.c
 	core/src/timer.c
 	core/src/comm.c
+	core/src/wdt.c
 )
 
 FILE(GLOB FreeRTOS_src FreeRTOS-Kernel/*.c)
@@ -32,7 +33,7 @@ target_include_directories( FreeRTOS PUBLIC
 target_link_libraries( simo
 	pico_stdlib 
 	hardware_gpio
-	hardware_uart 
+	hardware_uart
 	FreeRTOS
 	)
 

@@ -1,3 +1,6 @@
 \build
 \Documentation
-
+\pico-sdk
+\CMakeFiles
+\.vscode
+\elf2uf2

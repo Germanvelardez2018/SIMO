@@ -26,7 +26,7 @@ static void generic_handler(TimerHandle_t params)
 
 
 
-status_t create_timer_function( soft_timer_t* timer,callback_function callback, TickType_t time,uint8_t periodic)
+status_t simo_timer_create( soft_timer_t* timer,callback_function callback, TickType_t time,uint8_t periodic)
 {
 
  
@@ -55,20 +55,20 @@ status_t create_timer_function( soft_timer_t* timer,callback_function callback, 
 
 
 
-void delete_timer_function(soft_timer_t* timer)
+void simo_timer_delete(soft_timer_t* timer)
 {
 
 }
 
 
 
-void start_timer(soft_timer_t* timer)
+void simo_timer_start(soft_timer_t* timer)
 {
   xTimerStart((*timer),0);
 }
 
 
-void stop_timer(soft_timer_t* timer)
+void simo_timer_stop(soft_timer_t* timer)
 {
   xTimerStop((*timer),0);
 }

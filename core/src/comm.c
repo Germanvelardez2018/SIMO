@@ -23,7 +23,7 @@
 
  //Funcion del modulo
 
-#define   _TIMER_PERIODE_              5000
+#define   _TIMER_PERIODE_              500
 #define   _BUFFER_IRQ_RX_LEN_          50
 #define   _N_QUEUE_                    4
 #define   _TYPE_ELEMENT_QUEUE_         sizeof(char*)
@@ -93,8 +93,8 @@ static void _IRQ_RX_COMM_(void)
  {
 
  
-    write_simo_uart(&interface,"Sensors check  \r\n",strlen("Sensors check  \r\n"));
-
+    simo_uart_write(&interface,"Sensors check  \r\n",strlen("Sensors check  \r\n"));
+    vTaskDelay(500);
 
  }
 
@@ -106,11 +106,10 @@ static void _IRQ_RX_COMM_(void)
 
 
 
+char start_msg[] =" inicio el programam \r\n";
 
 
-
-
-void   comm_init(comm_config_t* config)
+void   simo_comm_init(comm_config_t* config)
 {
     
     interface.uart = uart0;
@@ -119,23 +118,29 @@ void   comm_init(comm_config_t* config)
     interface.baudrate = 115200;
     interface.irq_rx = false;
     interface.irq_tx = false;
-    init_simo_uart(&interface);
-    soft_timer_t t ; 
-    create_timer_function(&t,_CALLBACK_COMM_,_TIMER_PERIODE_,1);
-    start_timer(&t);
+    simo_uart_init(&interface);
 
-    set_rx_interrupcion_handler(&interface,_IRQ_RX_COMM_);
+
+  
+
+    soft_timer_t t ; 
+
+    simo_timer_create(&t,_CALLBACK_COMM_,_TIMER_PERIODE_,1);
+    simo_timer_start(&t);
+
+    simo_set_rx_interrupcion_handler(&interface,_IRQ_RX_COMM_);
 
 
     //creo la tarea que procesa
+      simo_uart_write(&interface,start_msg,strlen(start_msg));
 
-    xTaskCreate(comm_task,"comm process",5*1024,NULL,tskIDLE_PRIORITY+2,NULL);
+    xTaskCreate(simo_comm_task,"comm task",5*1024,NULL,tskIDLE_PRIORITY+2,NULL);
     
 }
 
 
 
-void   comm_deinit(comm_config_t* config)
+void   simo_comm_deinit(comm_config_t* config)
 {
     
 }
@@ -143,7 +148,7 @@ void   comm_deinit(comm_config_t* config)
 
 
 
-void comm_task(void* params)
+void simo_comm_task(void* params)
 {
 
     _QUEUE_IN_ = xQueueCreate(_N_QUEUE_ ,  sizeof(char*));    //Inicializo la queue que recibira los buffer proveniente de rx irq
@@ -155,14 +160,12 @@ void comm_task(void* params)
     {
         if(  xQueueReceive(_QUEUE_IN_,&buffer_in,portMAX_DELAY) == pdPASS)
         {
-             write_simo_uart(&interface,(buffer_in),strlen(buffer_in));
-             write_simo_uart(&interface,"\n",1);
+             simo_uart_write(&interface,"Commm:",strlen("Commm:"));
+             simo_uart_write(&interface,(buffer_in),strlen(buffer_in));
+             simo_uart_write(&interface,"\n",1);
             _counter = 0;
         }
-        else
-        {
-            write_simo_uart(&interface,"nada\n",strlen("nada\n"));
-        }
+      
 
     }
 
