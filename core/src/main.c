@@ -1,20 +1,45 @@
-#include <stdio.h>
-
-#include "pico/stdlib.h"
-#include "hardware/gpio.h"
-
-#include "simo/wdt/wdt.h"
-
-#include "simo/uart/uart.h"
 
 #include "FreeRTOS.h"
 #include "FreeRTOSConfig.h"
 #include "task.h"
-
-#include "simo/timer/timer.h"
-
+#include "queue.h"
+#include "pico/stdlib.h"
+#include "simo/wdt/wdt.h"
 #include <string.h>
-#include "simo/SIM/communication.h"
+#include <stdio.h>
+
+// pruebas
+
+#include "simo/sim_device.h"
+#include "simo/uart.h"
+
+
+
+device_t* sim_modulo; 
+
+static QueueSetHandle_t _QUEUE_RESPONSES_MAIN_;
+
+
+
+static void _task_read_responses(void* params)
+{
+    _QUEUE_RESPONSES_MAIN_ = xQueueCreate(4,sizeof(char*));
+    char* buff;
+    
+    while(1)
+    {
+         if (xQueueReceive(_QUEUE_RESPONSES_MAIN_, &buff, portMAX_DELAY) == pdPASS)
+        {
+            s_uart_write(S_UART0, "[_task_read_responses]:", strlen("[_task_read_responses]:"));
+            s_uart_write(S_UART0, (buff), strlen(buff));
+            s_uart_write(S_UART0, "\n", 1);
+        }
+
+    }
+   
+    
+
+}
 
 
 
@@ -28,19 +53,40 @@
 
 int main()
 {
+
+
     stdio_init_all();
+  
+    //creo un objeto generico device_t
+   
+   //le asigno un objeto sim_device 
+   /**
+    * Los objetos sim_device utilizan el puerto UART0 para comunicarse a 115200 baudios.
+    * **/
+   sim_modulo = create_sim_device(&_QUEUE_RESPONSES_MAIN_);  
 
-    //INICIO EL MODUILO
-   simo_communication_init();
+
+    xTaskCreate(_task_read_responses,"TAREAS LEER RESP",4*1024,NULL,3,NULL);
+
+
+   
+
+
+    
+   // inicio wdt
+  simo_wdt_init();
+
+  //inicio comunicacion
+  // simo_comm_irq_init();
 
 
 
-    simo_wdt_init();
 
     vTaskStartScheduler();
 
     for (;;)
     {
+        
         //should never get here
     }
 

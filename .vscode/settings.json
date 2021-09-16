@@ -21,7 +21,9 @@
         "watchdog.h": "c",
         "device.h": "c",
         "uart.h": "c",
-        "freertos.h": "c"
+        "freertos.h": "c",
+        "comm.h": "c",
+        "task.h": "c"
       },
   }
   

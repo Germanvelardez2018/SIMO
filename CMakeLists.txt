@@ -10,12 +10,11 @@ pico_sdk_init()
 
 add_executable(simo
     core/src/main.c
-	core/src/uart.c
 	core/src/timer.c
 	core/src/wdt.c
-	core/src/sim_device.c
-	core/src/communication.c
-
+	core/src/simo/uart.c
+	core/src/simo/device.c
+	core/src/simo/sim_device.c
 )
 
 FILE(GLOB FreeRTOS_src FreeRTOS-Kernel/*.c)
