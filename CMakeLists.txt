@@ -12,8 +12,10 @@ add_executable(simo
     core/src/main.c
 	core/src/uart.c
 	core/src/timer.c
-	core/src/comm.c
 	core/src/wdt.c
+	core/src/sim_device.c
+	core/src/communication.c
+
 )
 
 FILE(GLOB FreeRTOS_src FreeRTOS-Kernel/*.c)

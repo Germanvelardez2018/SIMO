@@ -18,7 +18,10 @@
         "string.h": "c",
         "freertosconfig.h": "c",
         "wdt.h": "c",
-        "watchdog.h": "c"
+        "watchdog.h": "c",
+        "device.h": "c",
+        "uart.h": "c",
+        "freertos.h": "c"
       },
   }
   

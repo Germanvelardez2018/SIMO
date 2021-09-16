@@ -9,9 +9,9 @@
 #include "hardware/watchdog.h"
 
 #define SIMO_WDT_PRIORITY     (configMAX_PRIORITIES - 1)
-#define TIMER_DIVIDER         2      /*Este numero debe ser mayor que 1 a medida que el micro se cobrecarga de tareas*/       
+#define TIMER_DIVIDER         4      /*Este numero debe ser mayor que 1 a medida que el micro se cobrecarga de tareas*/       
 #define PIN_BLINKING          PICO_DEFAULT_LED_PIN    /*Pin que parpadea al refrescar watch*/
-#define BLINK_TIME            50            /*Tiempo entre destellos*/
+#define BLINK_TIME            100            /*Tiempo entre destellos*/
 
 
 #define LED_PIN PICO_DEFAULT_LED_PIN
@@ -64,7 +64,7 @@ static void task_watching_simo(void *params)
   */
 void simo_wdt_init(void)
 {
-  xTaskCreate(task_watching_simo, "simo watching", 4 * 1024,(void*)( TIME_WDT +2*(TIME_BLINK)), SIMO_WDT_PRIORITY, &_WDT_TASK_HANDLER);
+  xTaskCreate(task_watching_simo, "simo watching", 2 * 1024,(void*)( TIME_WDT +2*(TIME_BLINK)), SIMO_WDT_PRIORITY, &_WDT_TASK_HANDLER);
 }
 
 /**
