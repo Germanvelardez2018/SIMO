@@ -13,6 +13,7 @@ add_executable(simo
 	core/src/timer.c
 	core/src/wdt.c
 	core/src/simo/uart.c
+	core/src/simo/i2c.c
 	core/src/simo/device.c
 	core/src/simo/sim_device.c
 )

@@ -23,7 +23,8 @@
         "uart.h": "c",
         "freertos.h": "c",
         "comm.h": "c",
-        "task.h": "c"
+        "task.h": "c",
+        "gpio.h": "c"
       },
   }
   

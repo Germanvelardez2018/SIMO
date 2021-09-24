@@ -42,16 +42,12 @@ static void task_watching_simo(void *params)
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
 
-  
-
     while (1)
-
     {
         watchdog_update();
         gpio_put(LED_PIN, GPIO_ON);
         vTaskDelay(TIME_BLINK);
         gpio_put(LED_PIN, GPIO_OFF);
-
         vTaskDelay(TIME_WDT / TIMER_DIVIDER);
     }
 }

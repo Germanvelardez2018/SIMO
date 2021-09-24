@@ -12,7 +12,7 @@
 #define SIM_BAUDRATE                 115200
 #define BUFFER_LEN_COMM              100
 #define BUFFER_LEN_RESP              100
-#define TIMEOUT_RX                    100
+#define TIMEOUT_RX                   100
 
 
 
@@ -76,17 +76,14 @@ static void _init_sim_device(void)
 
 static void _write_sim_device(char* b, uint32_t len)
 {
-    
-
-    s_uart_write(SIM_UART,b,len);
-    
-    
+    s_uart_write(SIM_UART,b,len);   
 }
 
 /**
  * @brief   envio los datos del buffer por salida uart
  * 
- * @param char* b: No se utilizar
+ * @param char* b: array de elementos a enviar
+ * @param uint32_t len: Tamaño del array de datos
  * @return  none
  * 
  * **/

@@ -61,7 +61,7 @@
  * @brief   Asigno los pines correspondiente al uart
  * 
 
- * @param   uart_t uart: uart a asignar pines
+ * @param   uart: uart a asignar pines
  * @return  NONE : NONE
  * 
  * **/
@@ -100,7 +100,7 @@ static void  _set_pins(uart_t uart)
  * @brief   devuelve el baudrate valido mas cerca al numero
  * 
 
- * @param   uint32_t baudrate: baudrate ingresado por parametro
+ * @param   baudrate: baudrate ingresado por parametro
  * @return  baudrate_t : baudrate valido
  * 
  * **/
@@ -117,7 +117,14 @@ static uint32_t _get_baudrate(uint32_t baudrate)
 }
 
 
+/**
+ * @brief   devuelve un uart valido
+ * 
 
+ * @param   uart: baudrate ingresado por parametro
+ * @return  uart_inst_t* : instancia valida de uart 
+ * 
+ * **/
 
 
 static uart_inst_t*  _get_uart(uart_t uart)
