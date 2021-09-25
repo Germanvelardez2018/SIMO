@@ -43,9 +43,9 @@ void simo_watch_task(void* params);
 
  /**
   * @brief Asocia una funcion de callback con un sotf_timer_t
-  * @param  soft_timer_t* timer: punter a la instancia del timer
-  * @param  callback_function callback: funcion a ejecutar 
-  * @param  bool_t periodic:  funcion (x==1)periodica  o (x!=1) one shot
+  * @param   timer: punter a la instancia del timer
+  * @param   callback: funcion a ejecutar 
+  * @param   periodic:  funcion (x==1)periodica  o (x!=1) one shot
   * @retval simo_err_t: Estado del sistema
   */
 
@@ -55,7 +55,7 @@ status_t simo_timer_create( soft_timer_t* timer,callback_function callback, Tick
 
 /**
   * @brief Elimina la configuracion de un timer
-  * @param  soft_timer_t* timer: Puntero a la instancia del timer
+  * @param   timer: Puntero a la instancia del timer
   *
   * @retval None
   */
@@ -64,7 +64,7 @@ void simo_timer_delete(soft_timer_t* timer);
 
 /**
   * @brief Inicia el timer
-  * @param  soft_timer_t* timer: Puntero a la instancia del timer
+  * @param   timer: Puntero a la instancia del timer
   *
   * @retval None
   */
@@ -73,7 +73,7 @@ void simo_timer_start(soft_timer_t* timer);
 
 /**
   * @brief Frena un timer que ya fue configurado e iniciado.
-  * @param  soft_timer_t* timer: Puntero a la instancia del timer
+  * @param   timer: Puntero a la instancia del timer
   *
   * @retval None
   */
@@ -84,7 +84,7 @@ void simo_timer_stop(soft_timer_t* timer);
 
 /**
   * @brief Resetea el contador del timer.
-  * @param  soft_timer_t* timer: Puntero a la instancia del timer
+  * @param   timer: Puntero a la instancia del timer
   *
   * @retval None
   */

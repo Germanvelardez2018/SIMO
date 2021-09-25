@@ -24,7 +24,11 @@
         "freertos.h": "c",
         "comm.h": "c",
         "task.h": "c",
-        "gpio.h": "c"
+        "gpio.h": "c",
+        "sim_device.h": "c",
+        "lcd.h": "c",
+        "i2c.h": "c",
+        "stdint.h": "c"
       },
   }
   

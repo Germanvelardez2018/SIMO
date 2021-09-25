@@ -5,7 +5,9 @@
   @date 20/09/2021
 */
 
-
+#include <stdint.h>
+#include <stdio.h>
+#include <stdbool.h>
 
 typedef enum {
      S_I2C0,      //pins asociados 4,5
@@ -76,7 +78,7 @@ typedef enum {
   * 
   * **/
 
-void s_i2c_write(i2c_t i2c,uint8_t slave_address, const uint8_t* data, uint32_t data_len,bool nostop);
+void s_i2c_write(i2c_t i2c,uint8_t slave_address, uint8_t* data, uint32_t data_len,bool nostop);
 
 
 
@@ -94,4 +96,4 @@ void s_i2c_write(i2c_t i2c,uint8_t slave_address, const uint8_t* data, uint32_t 
   * 
   * **/
 
-void s_i2c_read(i2c_t i2c,uint8_t slave_address, const uint8_t* data, uint32_t data_len,bool nostop);
+void s_i2c_read(i2c_t i2c,uint8_t slave_address,  uint8_t* data, uint32_t data_len,bool nostop);

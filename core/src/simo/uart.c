@@ -28,9 +28,9 @@
 /*!  UART0 GPIOS: TX: 1, RX: 2      opcionalmente    TX: 12, RX:13*/
 
 #define UART0                   uart0
-#define UART0_TX                1
+#define UART0_TX                0
 #define UART0_TX_OPTIONAL       12
-#define UART0_RX                2
+#define UART0_RX                1
 #define UART0_RX_OPTIONAL       13
 
 

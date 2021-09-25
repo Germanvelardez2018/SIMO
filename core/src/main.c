@@ -12,7 +12,7 @@
 
 #include "simo/sim_device.h"
 #include "simo/uart.h"
-
+#include "simo/lcd.h"
 
 
  
@@ -58,6 +58,9 @@ int main()
 {
 
     stdio_init_all();
+
+       
+
     //creo un objeto generico device_t
    //le asigno un objeto sim_device 
    /**
@@ -70,8 +73,7 @@ int main()
      * **/
 
     xTaskCreate(_task_read_responses,"TAREAS LEER RESP",4*1024,NULL,3,NULL);
-
-
+  //  xTaskCreate(lcd_task,"lcd ",15*1024,NULL,3,NULL);
    // inicio wdt
   simo_wdt_init();
 
