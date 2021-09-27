@@ -7,12 +7,6 @@
 ### Caractersticas:
 
 
-
-
-
-
-
-
 <ul>
    <li> Suministro único de 1,65 V - 3,6 V</li>
    <li> Suministro único de 1,65 V - 3,6 V</li>
@@ -55,9 +49,3 @@
    <li> Resistencia: 100.000 ciclos de programa / borrado por página como mínimo</li>
    <li> Retención de datos: 20 años.</li>
    <li> Cumple con el rango de temperatura industrial completo</li>
-
-</ul>
-
-
-
-
