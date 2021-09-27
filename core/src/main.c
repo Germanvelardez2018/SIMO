@@ -14,7 +14,7 @@
 #include "simo/uart.h"
 #include "simo/lcd.h"
 
-
+#include "simo/bluetooth/bluetooth.h"
  
 
 static QueueSetHandle_t _QUEUE_RESPONSES_MAIN_;
@@ -60,21 +60,7 @@ int main()
     stdio_init_all();
 
        
-
-    //creo un objeto generico device_t
-   //le asigno un objeto sim_device 
-   /**
-    * Los objetos sim_device utilizan el puerto UART0 para comunicarse a 115200 baudios.
-    * **/
-   device_t* sim_modulo = create_sim_device(&_QUEUE_RESPONSES_MAIN_);  
-
-    /**
-     * Tarea encargada de  recibir las respuestar por UART y gestionarlas
-     * **/
-
-    xTaskCreate(_task_read_responses,"TAREAS LEER RESP",4*1024,NULL,3,NULL);
-  //  xTaskCreate(lcd_task,"lcd ",15*1024,NULL,3,NULL);
-   // inicio wdt
+    s_bluetooth_init();
   simo_wdt_init();
 
 
