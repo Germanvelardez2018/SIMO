@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.16)
 
 # initialize the SDK based on PICO_SDK_PATH
 include(pico_sdk_import.cmake)
