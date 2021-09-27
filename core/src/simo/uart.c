@@ -5,6 +5,9 @@
 #include "hardware/gpio.h"
 #include <stdio.h>
 #include <string.h>
+
+
+
 #define UART_DEFAULT    uart0
 
 
@@ -14,7 +17,7 @@
 /**
  * @brief   devuelve el elemento uart correspondiente
  * 
- * @param   uart_t uart: hardware seleccionado
+ * @param   uart: hardware seleccionado
  *              UART_1
  *              UART_2
  * @return   uart_inst_t*: 

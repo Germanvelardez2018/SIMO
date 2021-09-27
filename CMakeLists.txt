@@ -14,7 +14,7 @@ add_executable(simo
 	core/src/wdt.c
 	core/src/simo/uart.c
 	core/src/simo/i2c.c
-	core/src/simo/lcd.c
+	core/src/simo/spi.c
 	core/src/simo/device.c
 	core/src/simo/sim_device.c
 )
@@ -38,6 +38,7 @@ target_link_libraries( simo
 	hardware_gpio
 	hardware_uart
 	hardware_i2c
+	hardware_spi
 	FreeRTOS
 	)
 

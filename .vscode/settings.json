@@ -12,7 +12,9 @@
       "buildTarget" : {
         "visibility": "hidden"
                  },
-      },
+      }
+      
+      ,
       "files.associations": {
         "stdlib.h": "c",
         "string.h": "c",
@@ -28,7 +30,12 @@
         "sim_device.h": "c",
         "lcd.h": "c",
         "i2c.h": "c",
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "stdio.h": "c",
+        "irq.h": "c",
+        "spi.h": "c"
       },
+      "C_Cpp.default.includePath": "${env:PICO_SDK_PATH}",
+      "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
   }
   
