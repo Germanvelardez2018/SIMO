@@ -5,9 +5,15 @@
   @date 25/09/2021
 */
 
-#include <stdint.h>
-#include <stdbool.h>
 
+
+
+
+
+#ifndef   _SPI_H
+  #define _SPI_H
+  #include <stdint.h>
+  #include <stdbool.h>
 
 typedef enum 
 {
@@ -21,21 +27,21 @@ typedef enum
 /**
  * @brief   Inicia el uart seleccionado
  * 
- * @param   uart: hardware seleccionado
- *              UART_1
- *              UART_2
+ * @param   spi: hardware seleccionado
+ *              S_SPI_0
+ *              S_SPI_1
  * @param   baudrate: baudrate a lo que funciona el sistema
  * @return  None
  * 
  * **/
 
-void s_spi_init(spi_t uart,uint32_t baudrate);
+void s_spi_init(spi_t spi,uint32_t baudrate);
 
 
 /**
- * @brief   Rutina de interrupcion para la recepcion de mensaje (simo_comm_irq())
+ * @brief   Deshabilitar el periferico SPI
  * 
- * @param   None  
+ * @param   spi: instancia de hardware a deshabilitar  
  * @return  None
  * 
  * **/
@@ -43,9 +49,11 @@ void s_spi_init(spi_t uart,uint32_t baudrate);
 void s_spi_deinit(spi_t  spi);
 
 /**
- * @brief   Rutina de interrupcion para la recepcion de mensaje (simo_comm_irq())
+ * @brief   Escribir bytes mediante SPI
  * 
- * @param   None  
+ * @param   spi: instancia de hardware a utilizar
+ * @param   buf: buffer de datos a enviar
+ * @param   len_buf: tamaño del buffer utilizado  
  * @return  None
  * 
  * **/
@@ -55,22 +63,52 @@ void s_spi_write(spi_t  spi, int8_t* buf, uint32_t len_buf );
 
 
 /**
- * @brief   Consulta si existen elemento por leer en el buffer uart
+ * @brief   consultar si esta disponible para lectura
  * 
- * @param   uart: uart fifo por leer
- * @return  timeout_us: tiempo de espera en microsegundos
+ * @param   spi: instancia de hardware a utilizar
+ 
+ * @return  res: verdadero o falso
  * 
  * **/
 
 bool s_spi_is_readable(spi_t  spi);
 
 /**
- * @brief   Rutina de interrupcion para la recepcion de mensaje (simo_comm_irq())
+ * @brief   
  * 
  * @param   None  
  * @return  None
  * 
  * **/
 
-void s_spi_read(spi_t  spi,int8_t* buf,uint8_t tx_data,uint8_t len_buf);
+
+/**
+ * @brief   Leer bytes mediante SPI
+ * 
+ * @param   spi: instancia de hardware a utilizar
+ * @param   buf: buffer de datos donde se almacenara bytes leidos
+ * @param   len_buf: tamaño del buffer utilizado  
+ * @return  None
+ * 
+ * **/
+void s_spi_read(spi_t  spi,int8_t* buf,uint8_t tx_data,uint32_t len_buf);
+
+
+
+
+/**
+ * @brief   Leer y escribir bytes meduante SPI
+ * 
+ * @param   spi: instancia de hardware a utilizar
+ * @param   buf_w: buffer de datos a escribir
+ * @param   buf: buffer de datos leidos
+ * @param   len_buf: tamaño del buffer utilizado  
+ * @return  None
+ * 
+ * **/
+
+void s_spi_write_read(spi_t spi, uint8_t* buf_w, uint8_t* buff_r, uint32_t len_buff);
+
+
+#endif
 

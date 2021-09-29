@@ -15,8 +15,8 @@
 #define SPI0_CSn                    5
 
 #define SPI1_CLK                    10
-#define SPI1_MISO                   11 //master input  TX
-#define SPI1_MOSI                   12 //master output RX
+#define SPI1_MOSI                   11 //master input  TX
+#define SPI1_MISO                   12 //master output RX
 #define SPI1_CSn                    13
 
 
@@ -148,10 +148,20 @@ bool s_spi_is_readable(spi_t  spi){
 
 
 
-void s_spi_read(spi_t  spi,int8_t* buf,uint8_t tx_data,uint8_t len_buf){
+void s_spi_read(spi_t  spi,int8_t* buf,uint8_t tx_data,uint32_t len_buf){
      // obtengo la instancia spi
     spi_inst_t* _spi = _get_spi(spi);
     spi_read_blocking(_spi,tx_data,buf,len_buf);
 
 }
 
+
+
+
+void s_spi_write_read(spi_t spi, uint8_t* buf_w, uint8_t* buf_r, uint32_t len_buf)
+{
+     // obtengo la instancia spi
+    spi_inst_t* _spi = _get_spi(spi);
+    spi_write_read_blocking(_spi,buf_w,buf_r,len_buf);
+
+}

@@ -17,6 +17,7 @@ add_executable(simo
 	core/src/simo/spi.c
 	core/src/simo/device.c
 	core/src/simo/sim_device.c
+	core/src/simo/AT45DB041E.c
 )
 
 FILE(GLOB FreeRTOS_src FreeRTOS-Kernel/*.c)
