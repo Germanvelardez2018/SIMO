@@ -33,7 +33,8 @@
         "stdint.h": "c",
         "stdio.h": "c",
         "irq.h": "c",
-        "spi.h": "c"
+        "spi.h": "c",
+        "at45db041e.h": "c"
       },
       "C_Cpp.default.includePath": "${env:PICO_SDK_PATH}",
       "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",

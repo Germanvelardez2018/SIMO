@@ -1,9 +1,13 @@
-#include "simo/memory/AT45DB041E.h"
+#include "simo/memory/_AT45DB041E.h"
 #include "simo/spi.h"
 #include "hardware/gpio.h"
 #include "pico/stdlib.h"
 
 #include  <stdlib.h>
+
+
+
+
 
 //bits de estado
 
@@ -114,9 +118,6 @@ static  uint8_t erase_cmd[ERASE_SECUENCE_LEN] = {ERASE_SECUENCE};
 
 
 
-// estructura usada 
-
-static flash_storage_t __flash;
 
 
 
@@ -133,7 +134,7 @@ static flash_storage_t __flash;
  * **/
 
 
-static inline bool __at45db_check_id(AT45DB041E_t* mem){
+static inline bool __at45db_check_id(_AT45DB041E_t* mem){
   
  //envio comando para obtener product ID
 
@@ -178,7 +179,7 @@ static inline bool __at45db_check_id(AT45DB041E_t* mem){
 
 
 
-static inline uint8_t __at45db_get_status(AT45DB041E_t* mem)
+static inline uint8_t __at45db_get_status(_AT45DB041E_t* mem)
 {
     
     uint8_t cmd[2]={GETSTATUS_CMD,0};
@@ -208,7 +209,7 @@ static inline uint8_t __at45db_get_status(AT45DB041E_t* mem)
  * 
  * **/
 
-static inline uint8_t __at45_is_bussy(AT45DB041E_t* mem)
+static inline uint8_t __at45_is_bussy(_AT45DB041E_t* mem)
 {
     uint8_t sr;
 
@@ -222,10 +223,13 @@ static inline uint8_t __at45_is_bussy(AT45DB041E_t* mem)
 
 
 
-AT45DB041E_t*  s_AT45DB041E_create( spi_t spi, uint8_t cs_pin)
+
+
+
+_AT45DB041E_t*  s__AT45DB041E_create( spi_t spi, uint8_t cs_pin)
 {
      
-    AT45DB041E_t* _mem = (AT45DB041E_t*) malloc(sizeof(AT45DB041E_t));
+    _AT45DB041E_t* _mem = (_AT45DB041E_t*) malloc(sizeof(_AT45DB041E_t));
     if( _mem == NULL) return NULL;                          //fallo asignacion de memoria
 
     _mem->buffer  = (uint8_t*) malloc(AT45DB041E_BUFFER * sizeof(uint8_t));
@@ -250,7 +254,7 @@ AT45DB041E_t*  s_AT45DB041E_create( spi_t spi, uint8_t cs_pin)
 
 
 
-int8_t  s_AT45DB041E_start(AT45DB041E_t* mem)
+int8_t  s__AT45DB041E_start(_AT45DB041E_t* mem)
 {
     // CS DE ALTO A BAJO  (INICIO DE COMANDO)
 
@@ -290,7 +294,7 @@ int8_t  s_AT45DB041E_start(AT45DB041E_t* mem)
 
 
 
-void  s_AT45DB041E_full_erase(AT45DB041E_t* mem)
+void  s__AT45DB041E_full_erase(_AT45DB041E_t* mem)
 {
     // CS DE ALTO A BAJO  (INICIO DE COMANDO)
      gpio_put(mem->cs_pin, 0);  //flanco descendente
@@ -303,276 +307,63 @@ void  s_AT45DB041E_full_erase(AT45DB041E_t* mem)
 
 
 
-// not_counter_len  is always false
-void s_AT45DB041E_write_counter_pages(AT45DB041E_t* mem ,uint8_t* count)
+
+//devuelve la pagina donde se guardo el dato
+
+void s__AT45DB041E_save_data(_AT45DB041E_t* mem, uint8_t* buff, uint8_t buff_len,uint16_t page, uint8_t position_page )
 {
 
     // cmd escribir | 3bytes de direccion(  11 bits pagina (0 a 2048| 8 bytes posicion de la pagina | 5 dummy bits)
-    uint32_t bytes_addres =0;   
+
+    uint32_t address = (uint32_t)(page << 21) + (uint32_t)(position_page <<13);
     uint8_t cmd[4] ;    
       
     cmd[0] = WRITE_CMD;
-    cmd[1] = (bytes_addres >> 24) & 0xff;
-    cmd[2] = (bytes_addres >> 16)  & 0xff;
-    cmd[3] = (bytes_addres >> 8)& 0xff;
+    cmd[1] = (address >> 24)  & 0xff;
+    cmd[2] = (address >> 16)  & 0xff;
+    cmd[3] = (address >> 8)& 0xff;
+
+    //inicia (pulso en bajo)
+
+    gpio_put(mem->cs_pin, 0); 
+   
+    s_spi_write(mem->spi,cmd,4);   // envio comandos
 
     
- // CS DE ALTO A BAJO  (INICIO DE COMANDO)
-     gpio_put(mem->cs_pin, 0);  //flanco descendente
+    s_spi_write(mem->spi,buff,(uint32_t)buff_len); // escribo en memoria
+    // finaliza (pulso en alto)
+    gpio_put(mem->cs_pin, 1); 
 
-
-    // comandos
-    s_spi_write(mem->spi,cmd,4);     // escribo comando para escribir 
-  
-    s_spi_write(mem->spi,count,2); // primer byte de la pagina, numero de bytes a escribir
-    
-    
-
-  //CD DE BAJO A ALTO (FIN DE COMANDO)
-    gpio_put(mem->cs_pin, 1);  //flanco ascendente
-
-    // esperamos
-    __at45_is_bussy(mem);
-
-
+     __at45_is_bussy(mem);
 }
 
 
 
+//devuelve la pagina donde se guardo el dato
 
-// not_counter_len  is always false
-void s_AT45DB041E_write_page(AT45DB041E_t* mem ,uint8_t* buffer,uint8_t len_buffer, uint16_t pg_num,uint8_t pos_page)
+void s__AT45DB041E_read_data(_AT45DB041E_t* mem, uint8_t* buff, uint8_t buff_len,uint16_t page, uint8_t position_page )
 {
 
     // cmd escribir | 3bytes de direccion(  11 bits pagina (0 a 2048| 8 bytes posicion de la pagina | 5 dummy bits)
-    uint32_t bytes_addres = ( (uint32_t)(pg_num)) << 21  | ((uint32_t) (pos_page)) << 13 ;     
-    uint8_t cmd[4] ;    
+
+    uint32_t address = (uint32_t)(page << 21) + (uint32_t)(position_page <<13);
+    uint8_t cmd[5] ;    
       
-    cmd[0] = WRITE_CMD;
-    cmd[1] = (bytes_addres >> 24)  & 0xff;
-    cmd[2] = (bytes_addres >> 16)  & 0xff;
-    cmd[3] = (bytes_addres >> 8)& 0xff;
-
-    
- // CS DE ALTO A BAJO  (INICIO DE COMANDO)
-     gpio_put(mem->cs_pin, 0);  //flanco descendente
-
-
-    // comandos
-    s_spi_write(mem->spi,cmd,4);     // escribo comando para escribir 
-    
-    uint8_t len[1] = {len_buffer};
-    s_spi_write(mem->spi,len,1); // primer byte de la pagina, numero de bytes a escribir
-    gpio_put(mem->cs_pin, 1);  //flanco ascendente
-
-     sleep_us(100);
-   
- 
-  
-    cmd[3]= cmd[3] | (0x01 << 5); // quiero leer despues del primer bytes (contador)    
-    // comandos
-    gpio_put(mem->cs_pin, 0);  //flanco descendente
-
-    s_spi_write(mem->spi,cmd,4);     // escribo comando para escribir 
-
-   s_spi_write(mem->spi,buffer,len_buffer);    //buffer a escribir
-  //CD DE BAJO A ALTO (FIN DE COMANDO)
-    gpio_put(mem->cs_pin, 1);  //flanco ascendente
-
-    // esperamos
-    __at45_is_bussy(mem);
-
-
-}
-
-
-
-
-
-
-
-
-
-void s_AT45DB041E_read_counter(AT45DB041E_t* mem ,uint8_t* buffer)
-{
-// cmd escribir | 3bytes de direccion(  11 bits pagina (0 a 2048| 8 bytes posicion de la pagina | 5 dummy bits)
-    
-    uint32_t bytes_addres = 0;      
-  
-
-    uint8_t cmd[5];
     cmd[0] = CMD_FAST_READ;
-    cmd[1] = (bytes_addres >> 24) & 0xff;
-    cmd[2] = (bytes_addres >> 16) & 0xff;
-    cmd[3] = (bytes_addres >> 8)  & 0xff;
+    cmd[1] = (address >> 24) & 0xff;
+    cmd[2] = (address >> 16) & 0xff;
+    cmd[3] = (address >> 8)  & 0xff;
     cmd[4] = 0;
-    
+    //inicia (pulso en bajo)
 
-    // CS DE ALTO A BAJO  (INICIO DE COMANDO)
-     gpio_put(mem->cs_pin, 0);  //flanco descendente
-    // comandos
+    gpio_put(mem->cs_pin, 0); 
+    
+    
     s_spi_write(mem->spi,cmd,5);
-    // comandos
 
-   
-    s_spi_read(mem->spi,buffer,0,2);    //leo la primera posicion de la dirrecicon pedida
+    s_spi_read(mem->spi,buff,0,buff_len);    //buffer a escribir
+    // finaliza (pulso en alto)
+    gpio_put(mem->cs_pin, 1); 
 
-    gpio_put(mem->cs_pin, 1);  //flanco ascendente
-
-    // esperamos
-    __at45_is_bussy(mem);
-
-
-}
-
-
-
-
-void s_AT45DB041E_read_page(AT45DB041E_t* mem ,uint8_t* buffer,uint8_t len_buffer, uint16_t pg_num, uint8_t pos_page)
-{
-// cmd escribir | 3bytes de direccion(  11 bits pagina (0 a 2048| 8 bytes posicion de la pagina | 5 dummy bits)
-    
-    uint32_t bytes_addres = ( (uint32_t)(pg_num)) << 21  | ((uint32_t) (pos_page)) << 13 ;      
-  
-
-    uint8_t cmd[5];
-    cmd[0] = CMD_FAST_READ;
-    cmd[1] = (bytes_addres >> 24) & 0xff;
-    cmd[2] = (bytes_addres >> 16) & 0xff;
-    cmd[3] = (bytes_addres >> 8)  & 0xff;
-    cmd[4] = 0;
-    
-
-    // CS DE ALTO A BAJO  (INICIO DE COMANDO)
-     gpio_put(mem->cs_pin, 0);  //flanco descendente
-    // comandos
-    s_spi_write(mem->spi,cmd,5);
-    // comandos
-
-   //leo la primera posicion de la direccion pedida para saber cual es el tamanio del
-            //leo buffer_len page
-        
-        s_spi_read(mem->spi,buffer,0,1);    //buffer a escribir
-
-        gpio_put(mem->cs_pin, 1);  //flanco ascendente
-
-        sleep_us(100);
-        //leo la cantidad de bytes utilizadas en la pagina, o
-    
-        uint8_t true_len = (buffer[0]< len_buffer)?buffer[0]: len_buffer;
-
-        cmd[3]= cmd[3] | (0x01 << 5); // quiero leer despues del primer bytes (contador)
-        // CS DE ALTO A BAJO  (INICIO DE COMANDO)
-        gpio_put(mem->cs_pin, 0);  //flanco descendente
-
-        
-        s_spi_write(mem->spi,cmd,5);
-        
-        
-        s_spi_read(mem->spi,buffer,0,true_len);    //buffer a escribir
-        //CD DE BAJO A ALTO (FIN DE COMANDO)
-
-    
-    
-    gpio_put(mem->cs_pin, 1);  //flanco ascendente
-
-    // esperamos
-    __at45_is_bussy(mem);
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-/**
- Versiones simplificadas
-**/
-
-void s_AT45DB041E_write_data(AT45DB041E_t* mem ,uint8_t* data_buff,uint8_t len_buff, uint16_t pg_num )
-{
-
-    // cmd escribir | 3bytes de direccion(  11 bits pagina (0 a 2048| 8 bytes posicion de la pagina | 5 dummy bits)
-   
-     uint32_t bytes_addres = ( (uint32_t)(pg_num)) << 21  + ((uint32_t) (0)) << 13 ;     
-    uint8_t cmd[4] ;    
-      
-    cmd[0] = WRITE_CMD;
-    cmd[1] = (bytes_addres >> 24)  & 0xff;
-    cmd[2] = (bytes_addres >> 16)  & 0xff;
-    cmd[3] = (bytes_addres >> 8)   & 0xff;
-
-    
- // CS DE ALTO A BAJO  (INICIO DE COMANDO)
-     gpio_put(mem->cs_pin, 0);  //flanco descendente
-
-
-    // comandos
-    s_spi_write(mem->spi,cmd,4);     // escribo comando para escribir 
-    
-
-    // len_buff +
-
-    
-    s_spi_write(mem->spi,&len_buff,1); // primer byte de la pagina, numero de bytes a escribir
-    s_spi_write(mem->spi,data_buff,len_buff);
-
-    gpio_put(mem->cs_pin, 1);  //flanco ascendente
-
-    sleep_us(10);
-   
- 
-  
-    gpio_put(mem->cs_pin, 1);  //flanco ascendente
-
-    // esperamos
-    __at45_is_bussy(mem);
-
-
-
-}
-
-
-
-void s_AT45DB041E_read_data(AT45DB041E_t* mem ,uint8_t* data_buff,uint8_t len_buff, uint16_t pg_num )
-{
-
-// cmd escribir | 3bytes de direccion(  11 bits pagina (0 a 2048| 8 bytes posicion de la pagina | 5 dummy bits)
-    
-    uint32_t bytes_addres = ( (uint32_t)(pg_num)) << 21  ;      
-  
-    uint8_t cmd[5];
-    cmd[0] = CMD_FAST_READ;
-    cmd[1] = (bytes_addres >> 24) & 0xff;
-    cmd[2] = (bytes_addres >> 16) & 0xff;
-    cmd[3] = (bytes_addres >> 8)  & 0xff;
-    cmd[4] = 0;
-    
-
-    // CS DE ALTO A BAJO  (INICIO DE COMANDO)
-     gpio_put(mem->cs_pin, 0);  //flanco descendente
-    // comandos
-    s_spi_write(mem->spi,cmd,5);
-    // comandos
-
-   //leo la primera posicion de la direccion pedida para saber cual es el tamanio del
-            //leo buffer_len page
-        
-    s_spi_read(mem->spi,data_buff,0,len_buff);    //buffer a escribir
-
-    gpio_put(mem->cs_pin, 1);  //flanco ascendente
-
-    // esperamos
-    __at45_is_bussy(mem);
-
-
-
+     __at45_is_bussy(mem);
 }

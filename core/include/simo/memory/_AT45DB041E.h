@@ -1,5 +1,5 @@
 /**
- * @file memory.h
+ * @file _AT45DB041E
  * @brief Driver para manejo de memoria externa AT45DB041E
  * @author German Velardez
  * @date 25/09/2021
@@ -15,122 +15,6 @@
 
 
 
-
-/**
- * de memoria principal a buffer
- * 53h buffer 1
- * 55h buffer 2
- * 
- * 
- * lectura
- *  D4h(fast) y D1h(low) para usar buffer  1  
- *  D6h (fast) y D3h(low) para usar buffer 2 
- *  escritura:
- *   84h buffer 1
- *   87h buffer 2
- *  mover de buffer a pagina principal (borrado de pagina previo incluido).Se copia todo el buffer
- *   83h buffer 1
- *   86 buffer 2
- * 
- * en caso de error de programacion o borrado, cambiara bit EPE del registro de estado
- * 
- * escribir buffer --> borra pagina---> pasar buffer a pagina. Se copia todo el buffer
- * 
- * 82h buffer1
- * 85h buffer2
- * 
- * Parecido  a el anterior pero sin borrado de pagina automatico. 
- * 88h buffer 1
- * 89h buffer 2
- * 
- * 
- * de buffer a memoria principal con borrado incluido. Pero solo bytes utiles del buffer, no todo el buffer
- * 82h buffer1
- * 85h buffer2
- * 
- * lo mismo que el anterior pero sin borrado intermedio
- * 02h buffer1
- * 
- * 
- * leer-modificar-escribir
- * 58h buffer 1
- * 59h buffer 2
- * 
- * borrado de pagina
- * 81h
- * borrado block
- * 50h
- * borrado sector (memoria principal tiene 9 sectores)
- * 7ch
- * 
- * borrado de todo el chip
- * secuencia de 4 bytes
- * C7h, 94h, 80h y 9Ah 
- * 
- * protector por software (sector)
- *   habilitar: 3Dh,2Ah, 7Fh y A9h 
- *   deshabilitar:  3Dh, 2Ah, 7Fh y 9Ah 
- * 
- * 
- * --registro de proteccion de sectores (un byte de 00h a FFh)
- * 
- * borrar registro de procteccion: (borrado full resultado FFh)
- * secuencia : 3Dh, 2Ah, 7Fh y CFh
- * 
- * 
- * programar el registro de proteccion
- * secuencia 3Dh, 2Ah, 7Fh y FCh + byte con los registro seteados
- * (utiliza buffer 1 para gestionar esto)
- * 
- * para leer el registro de proteccion: 
- * comandos 32h seguido de leectura de 3 bytes
- * @note 10k de ciclos de programacion/borrado del registro de proteccion
- * 
- * bloque de sector:
- * secuencia 3Dh, 2Ah, 7Fh 30h + 3 bytes de dirreccion
- * 
- * 
- * leer registro de estado
- * comandos D7h  devuelve 2 bytes (realmente devuelve 4. 2 de registro y repeticion del mismo)
-
---- apagado profundo (mantiene contenido buffers)
-
-comandos:
-deep sleep B9h   ((en modo deep sleep ignora todos los comandos menos el de reanudar))
-reanudar   ABh 
-
-
- ---ultra apagado profundo
-
-ultra deep sleep 79h
-reanudar con un Csn en bajo durante un tiempo r
-
-
-configuracion de pamaño de buffer y memoria. Por defecto 264 ...se configura tamaño de pagina y buffer juntos
-
-
-configurar en 256 secuencia:
-    3Dh, 2Ah, 80h A6h
-
-configurar en 264 secuencia:
-    3Dh, 2Ah, 80h A7h
-
-    para configurar esto usa un registro no volatil con 10k de ciclos borrado
- 
- -------codigo de manofactura
-
-  comandos 9FH 
-  repuesta 4 bytes, 
-  1 bytes manofacture id
-  2 byte ID device
-  3  byte 01h ---para verificar q termina secuencia
-  y 1 bytes mas de shapa  00h (edidata)
-
-
-  ----------reiniciio por software
-  secuencia : F0h, 00h, 00h y 00h 
- 
- * **/
 
 
 
@@ -207,18 +91,6 @@ configurar en 264 secuencia:
 
 
 
-typedef struct __flash_storage
-{
-    int pg_num;          // paginas
-    int pg_shifts;       //sectores
-    uint32_t block_sz;   //bloques
-    uint32_t erase_sz;
-    uint32_t n_eraseblocks;
-} flash_storage_t;
-
-
-
-
 
 
 
@@ -234,7 +106,7 @@ typedef struct
      uint8_t*    buffer;
      uint8_t    counter_buff;
 
-} AT45DB041E_t;
+} _AT45DB041E_t;
 
 
 
@@ -276,7 +148,7 @@ typedef struct
  * **/
 
 
-AT45DB041E_t*  s_AT45DB041E_create(  spi_t spi, uint8_t cs_pin);
+_AT45DB041E_t*  s__AT45DB041E_create(  spi_t spi, uint8_t cs_pin);
 
 
 
@@ -288,7 +160,7 @@ AT45DB041E_t*  s_AT45DB041E_create(  spi_t spi, uint8_t cs_pin);
  * 
  * **/
 
-void  s_AT45DB041E_full_erase(AT45DB041E_t* mem);
+void  s__AT45DB041E_full_erase(_AT45DB041E_t* mem);
 
 
 
@@ -301,53 +173,14 @@ void  s_AT45DB041E_full_erase(AT45DB041E_t* mem);
  * 
  * **/
 
-int8_t  s_AT45DB041E_start(AT45DB041E_t* mem);
+int8_t  s__AT45DB041E_start(_AT45DB041E_t* mem);
 
 
 
 
-
-/**
- * @brief   Escribir en memoria AT45DB041E  
-
- * @param   mem : instancia a un objeto 
- * @return  None: 
- * 
- * **/
-
-void s_AT45DB041E_write_page(AT45DB041E_t* mem ,uint8_t* buffer,uint8_t len_buffer, uint16_t pg_num,uint8_t pos_page);
+void s__AT45DB041E_save_data(_AT45DB041E_t* mem, uint8_t* buff, uint8_t buff_len,uint16_t page, uint8_t position_page );
 
 
-/**
- * @brief   Leer memoria AT45DB041E enviado  
-
- * @param   mem : instancia a un objeto 
- * @return  None: 
- * 
- * **/
-void s_AT45DB041E_read_page(AT45DB041E_t* mem ,uint8_t* buffer,uint8_t len_buffer, uint16_t pg_num, uint8_t pos_page );
-
-
-
-
-
-void s_AT45DB041E_write_counter_pages(AT45DB041E_t* mem ,uint8_t* count);
-
-
-void s_AT45DB041E_read_counter(AT45DB041E_t* mem ,uint8_t* buffer);
-
-
-
-
-/**
- Versiones simplificadas
-**/
-
-void s_AT45DB041E_write_data(AT45DB041E_t* mem ,uint8_t* data_buff,uint8_t len_buff, uint16_t pg_num );
-
-
-
-void s_AT45DB041E_read_data(AT45DB041E_t* mem ,uint8_t* data_buff,uint8_t len_buff, uint16_t pg_num );
-
+void s__AT45DB041E_read_data(_AT45DB041E_t* mem, uint8_t* buff, uint8_t buff_len,uint16_t page, uint8_t position_page );
 
 

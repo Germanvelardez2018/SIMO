@@ -1,0 +1,14 @@
+#Mapa de memoria que se utiliza:
+
+
+
+Se trabaja en paginas de 256bytes
+
+
+AT45DB041E:2048 paginas
+
+
+offset_data = 256 pagina  -------> primera pagina a utilizar esta en sector 1. Direccion inicial = 256 * (pagina_size)= 65536 = 0x10000
+
+
+

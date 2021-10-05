@@ -15,130 +15,191 @@
 #include "simo/spi.h"
 #include "simo/memory/AT45DB041E.h"
  
-
-static QueueSetHandle_t _QUEUE_RESPONSES_MAIN_;
-
-#define PIN_BLINK      9
+#include "simo/memory/memory_store.h"
 
 
-#define BLINK      25
+#define PIN_CS      9
 
+#define BLINK       8
 
 
 
 
-    //inicio el SP1
-    #define CMD_LEN         4
-    #define RES_LEN         4
-    #define ERASE_SECUENCE_LEN       4
-    #define DUMMY_BYTE      0                         
-    uint8_t cmd[CMD_LEN]=
-    {
-        CMD_RDID,   //comando para leer ID del chip
-        DUMMY_BYTE,
-        DUMMY_BYTE,
-        DUMMY_BYTE
-    };
-    uint8_t res[RES_LEN]=
-    {
-      DUMMY_BYTE,
-      DUMMY_BYTE,
-      DUMMY_BYTE,
-      DUMMY_BYTE,
-    };
-
-    uint8_t erase_cmd[ERASE_SECUENCE_LEN]=
-    {
-        0xC7,
-        0x94,
-        0x80,
-        0x9A
-    };
-
-
-static void _task_test_spi(void* params)
+static void _task3_spi(void *param)
 {
-    
-
-    vTaskDelay(10000); // espero 10 s
-    
-     
+    vTaskDelay(10000);
     s_uart_init(S_UART0,115200);
     
-    s_uart_write(S_UART0,"borrar flash\n",strlen("borrar flash\n"));
-    s_spi_init(S_SPI1,10*1000);
-
-    // secuencia para borrar flash
-
-    gpio_init(PIN_BLINK);
-    gpio_set_dir(PIN_BLINK, 1);
-    gpio_put(PIN_BLINK, 1);  //flanco ascendente
-    vTaskDelay(500);
-    gpio_put(PIN_BLINK, 0);  //flanco ascendente
-
-
-    s_spi_write(S_SPI1,erase_cmd,ERASE_SECUENCE_LEN);
-
-    gpio_put(PIN_BLINK, 1);  //flanco ascendente
-    vTaskDelay(4000);
-            s_uart_write(S_UART0,"se borro la memoria\n",strlen("se borro la memoria\n"));
+    s_uart_write(S_UART0,"test 3: driver memoria spi\n",strlen("test 3: driver memoria spi\n"));
 
 
 
+    // instancio una memoria
+    //static AT45DB041E_t* mem;
+
+    s_uart_write(S_UART0,"test 3: se creara memoria\n",strlen("test 3: se creara memoria\n"));
+    
+    
+    s_memory_store_init();
+
+
+
+
+    //mem = s_AT45DB041E_create(S_SPI1,PIN_CS);
+    s_uart_write(S_UART0,"test 3: se creo memoria\n",strlen("test 3: se creo memoria\n"));
+    //uint8_t res = s_AT45DB041E_start(mem);
+    s_uart_write(S_UART0,"test 3: memoria start \n",strlen("test 3: memoria start \n"));
+
+   
+
+
+
+    char msg1[]= "mensaje de prueba 1 aleatorio";
+    char msg2[]= "mensaje de prueba 2 perspectiva";
+    char msg3[]= "mensaje de prueba 3 logico";
+    char msg4[]= "mensaje de prueba 4 nada";
+    char msg5[]= "mensaje de prueba 5 logico2";
+
+
+   
+
+    uint16_t w1,w2,w3, w4 ,w5 ;
+
+
+
+
+   //guardo segundo mensaje
+    w2 = s_memory_store_add_data(msg2,strlen(msg2)+1);
+    s_uart_write(S_UART0,"counter inicial: ",strlen("counter2: "));
+    s_uart_write(S_UART0,(uint8_t*)&w2,2);
+    s_uart_write(S_UART0,"\n",strlen("\n"));
+
+
+    //guardo primer mensaje
+    w1 = s_memory_store_add_data(msg1,strlen(msg1)+1);
+    s_uart_write(S_UART0,"counter1: ",strlen("counter1: "));
+   
+    s_uart_write(S_UART0,(uint8_t*)&w1,2);
+    s_uart_write(S_UART0,"\n",strlen("\n"));
+
+ 
+
+
+    w3 = s_memory_store_add_data(msg3,strlen(msg3)+1);
+    s_uart_write(S_UART0,"counter3: ",strlen("counter3: "));
+    s_uart_write(S_UART0,(uint8_t*)&w3,2);
+    s_uart_write(S_UART0,"\n",strlen("\n"));
+
+    w4 = s_memory_store_add_data(msg4,strlen(msg4)+1);
+    s_uart_write(S_UART0,"counter4: ",strlen("counter4: "));
+    s_uart_write(S_UART0,(uint8_t*)&w4,2);
+    s_uart_write(S_UART0,"\n",strlen("\n"));
+
+
+     w5 = s_memory_store_add_data(msg5,strlen(msg5)+1);
+    s_uart_write(S_UART0,"counter5: ",strlen("counter5: "));
+    s_uart_write(S_UART0,(uint8_t*)&w5,2);
+    s_uart_write(S_UART0,"\n",strlen("\n"));
+
+
+    //s_AT45DB041E_write_page(mem,msg,strlen(msg)+1,10,0,false);
+    s_uart_write(S_UART0,"test 3:Se escribio 1: en memoria:  ",strlen("test 3:Se escribio 1: en memoria:  "));
+    s_uart_write(S_UART0,msg1,strlen(msg1));
+    s_uart_write(S_UART0,"\n",1);
+
+      s_uart_write(S_UART0,"test 3:Se escribio 2: en memoria:  ",strlen("test 3:Se escribio 2: en memoria:  "));
+    s_uart_write(S_UART0,msg2,strlen(msg2));
+    s_uart_write(S_UART0,"\n",1);
+
+     //s_AT45DB041E_write_page(mem,msg,strlen(msg)+1,10,0,false);
+    s_uart_write(S_UART0,"test 3:Se escribio 3: en memoria:  ",strlen("test 3:Se escribio 1: en memoria:  "));
+    s_uart_write(S_UART0,msg3,strlen(msg3));
+    s_uart_write(S_UART0,"\n",1);
+
+      s_uart_write(S_UART0,"test 3:Se escribio 4: en memoria:  ",strlen("test 3:Se escribio 2: en memoria:  "));
+    s_uart_write(S_UART0,msg4,strlen(msg4));
+    s_uart_write(S_UART0,"\n",1);
+
+     s_uart_write(S_UART0,"test 3:Se escribio 5: en memoria:  ",strlen("test 3:Se escribio 2: en memoria:  "));
+    s_uart_write(S_UART0,msg5,strlen(msg5));
+    s_uart_write(S_UART0,"\n",1);
+
+    vTaskDelay(100);
+
+   vTaskDelay(10);
+    uint8_t elements_read1[100];
+    uint8_t elements_read2[100];
+     uint8_t elements_read3[100];
+    uint8_t elements_read4[100];
+     uint8_t elements_read5[100];
+
+
+
+
+
+
+
+
+
+
+
+    uint16_t r1,r2,r3,r4,r5;
+   r1 =  s_memory_store_read_data( elements_read1,0,0); //pagina 1 
+   r2 =  s_memory_store_read_data( elements_read2,0,1); //pagina 2
+   r3 =  s_memory_store_read_data( elements_read3,0,2); //pagina 1 
+   r4 =  s_memory_store_read_data( elements_read4,0,3); //pagina 2
+     r5 =  s_memory_store_read_data( elements_read5,0,4); //pagina 2
 
 
   
+   
+    vTaskDelay(10);
+    s_uart_write(S_UART0,"mensaje 1:Se leyo ",strlen("mensaje 1:Se leyo "));
 
+    char buf1[30];
+    sprintf(buf1,"bytes leidos %u \n",r1);
+    s_uart_write(S_UART0,buf1,strlen(buf1));
+   
+
+    s_uart_write(S_UART0,(elements_read1),strlen(elements_read1));
+    s_uart_write(S_UART0,"\n",1);
+
+    
+    sprintf(buf1,"bytes leidos %u \n",r2);
+    s_uart_write(S_UART0,buf1,strlen(buf1));
+
+    s_uart_write(S_UART0,(elements_read2),strlen(elements_read2));
+    s_uart_write(S_UART0,"\n",1);
+
+     sprintf(buf1,"bytes leidos %u \n",r3);
+    s_uart_write(S_UART0,buf1,strlen(buf1));
+
+    s_uart_write(S_UART0,(elements_read3),strlen(elements_read3));
+    s_uart_write(S_UART0,"\n",1);
+
+
+    sprintf(buf1,"bytes leidos %u \n",r4);
+    s_uart_write(S_UART0,buf1,strlen(buf1));
+
+    s_uart_write(S_UART0,(elements_read4),strlen(elements_read4));
+    s_uart_write(S_UART0,"\n",1);
+  
+
+     sprintf(buf1,"bytes leidos %u \n",r5);
+    s_uart_write(S_UART0,buf1,strlen(buf1));
+
+    s_uart_write(S_UART0,(elements_read5),strlen(elements_read5));
+    s_uart_write(S_UART0,"\n",1);
     while(1)
     {
-        vTaskDelay(1);
-        s_uart_write(S_UART0,"paso check\n",strlen("paso check\n"));
-
-
-//
-        
-        gpio_put(PIN_BLINK, 0);  //flanco descendente
-
-        s_spi_write_read(S_SPI1,cmd,res,RES_LEN);
-   
-    
-       
-      
-        gpio_put(PIN_BLINK, 1);  //flanco ascendente
-
-        s_uart_write(S_UART0,"bit:\n",strlen("bit:\n"));
-        s_uart_write(S_UART0,res,RES_LEN);
-        s_uart_write(S_UART0,"\n",strlen("\n"));
-        vTaskDelay(2000);
-      
-        vTaskDelay(1000);
-           
+        vTaskDelay(500);
     }
-   
-    
 
 }
 
 
 
 
-void task_led(void* params)
-{
-   
-   // uart_init(S_UART0,115200);
-   // s_uart_write(S_UART0,"iniciando pruebas de SPI\n",strlen("iniciando pruebas de SPI\n"));
-
-    while(1)
-    {
-     //   s_uart_write(S_UART0,"blink\n",strlen("blink\n"));
-      gpio_put(PIN_BLINK, 1);    // flanco descendente
-      vTaskDelay(1000);
-      gpio_put(PIN_BLINK, 0);    // flanco descendente
-
-        vTaskDelay(1000);
-
-    }
-}
 
 
 
@@ -156,21 +217,17 @@ int main()
 
 
  
-
    
-    //simo_wdt_init();
+    
+    simo_wdt_init();
      
 
 
-    BaseType_t ret =   xTaskCreate(_task_test_spi,"spi test",3000,0,3,0);
+    BaseType_t ret =   xTaskCreate(_task3_spi,"spi test",3000,0,3,0);
 
-    if( ret == pdPASS)
-    {
-     //   s_uart_write(S_UART0,"paso check\n",strlen("paso check\n"));
-        gpio_put(BLINK, 1);   // creacion de tarea fallo
-    }
+   
     
-    //xTaskCreate(_task_test_spi,"spi test",2000,0,3,0);
+  
     vTaskStartScheduler();
 
     for (;;)
