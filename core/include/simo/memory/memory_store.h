@@ -1,7 +1,6 @@
 #include <stdint.h>
 
 #define CONFIG_OFFSET      (0)         //Empezamos en sector 0
-#define API_COUNT_DATA_ADDRESS              (CONFIG_OFFSET+ 0)    //Contador de datos almacenados
 #define API_NAME_ADDRESS                    (CONFIG_OFFSET+ 1)    //Nombre de la aplicacion
 #define URL_SERVER                          (CONFIG_OFFSET+ 2)   //IP del servidor MQTT 
 
@@ -38,3 +37,13 @@ void s_memory_store_deinit(void);
 uint16_t s_memory_store_add_data(char* data, uint8_t len_data);
 
 uint16_t s_memory_store_read_data(char* buffer,uint8_t len_buff,uint16_t page_num);
+
+
+uint16_t s_memory_store_add_page(char* data, uint8_t len_data, uint16_t page);
+
+
+
+
+uint16_t get_counter_data();
+
+void set_memory_counter_data(uint16_t counter);
