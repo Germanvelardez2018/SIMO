@@ -102,7 +102,7 @@ uint16_t s_memory_store_read_data(char* buffer,uint8_t len_buff,uint16_t page_nu
 
    
     sleep_us(100);
-    s__AT45DB041E_read_data(_memory_app, buffer,(uint16_t)len[1] ,255+page_num ,1 ); // empiezo a leer desde la posicion siguiente
+    s__AT45DB041E_read_data(_memory_app, buffer,(uint8_t)len[1] ,255+page_num ,1 ); // empiezo a leer desde la posicion siguiente
 
 
    
