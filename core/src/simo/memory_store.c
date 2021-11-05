@@ -44,6 +44,13 @@ static _AT45DB041E_t* _memory_app ;
 }
 
 
+void s_memory_store_full_clear(void)
+{
+     s__AT45DB041E_full_erase(_memory_app); // BORRAMOS MEMORIA 
+   
+}
+
+
 void s_memory_store_init(void)
 {
     _memory_app = s__AT45DB041E_create(MEMORY_APP_SPI,CS_MEMORY);
@@ -52,7 +59,7 @@ void s_memory_store_init(void)
 
   //s__AT45DB041E_full_erase(_memory_app); // BORRAMOS MEMORIA 
     sleep_us(1000);
-    set_memory_counter_data(0); // por unica vez
+  //  set_memory_counter_data(0); // por unica vez
 }
 
 
@@ -127,3 +134,6 @@ uint16_t s_memory_store_read_data(char* buffer,uint8_t len_buff,uint16_t page_nu
 
   
 }
+
+
+

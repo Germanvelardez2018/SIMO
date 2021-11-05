@@ -31,6 +31,8 @@
 void s_memory_store_init(void);
 
 
+void s_memory_store_full_clear(void);
+
 void s_memory_store_deinit(void);
 
 
