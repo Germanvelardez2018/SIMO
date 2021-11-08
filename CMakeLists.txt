@@ -21,6 +21,7 @@ add_executable(simo
 	core/src/simo/_AT45DB041E.c  #nueva version
 	core/src/simo/memory.c
 	core/src/simo/memory_store.c
+	core/src/simo/debug_interface.c
 )
 
 FILE(GLOB FreeRTOS_src FreeRTOS-Kernel/*.c)

@@ -16,7 +16,7 @@
 #include "simo/memory/AT45DB041E.h"
  
 #include "simo/memory/memory_store.h"
-
+#include "simo/debug_interface.h"
 
 #define PIN_CS      9
 
@@ -182,6 +182,16 @@ w7 = s_memory_store_add_data(msg7,strlen(msg7)+1);
 }
 
 
+void debug_test(void* params)
+{
+    while(1)
+    {
+        debug_printf("debugg message \r\n");
+        vTaskDelay(1500);
+    }
+}
+
+
 
 
 
@@ -197,8 +207,9 @@ w7 = s_memory_store_add_data(msg7,strlen(msg7)+1);
 int main()
 {
 
-    stdio_init_all();
+  //  stdio_init_all();
 
+    debug_init();
 
  
    
@@ -207,10 +218,10 @@ int main()
      
 
 
-    BaseType_t ret =   xTaskCreate(_task3_spi,"spi test",6000,0,3,0);
+   // BaseType_t ret =   xTaskCreate(_task3_spi,"spi test",6000,0,3,0);
 
    
-    
+    BaseType_t ret =   xTaskCreate(debug_test,"debug test",2000,0,3,0);
   
     vTaskStartScheduler();
 
