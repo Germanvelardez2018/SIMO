@@ -13,6 +13,7 @@
 #ifndef   _SIMO_CORE_H
 #define   _SIMO_CORE_H
 
+#include "simo/debug_interface.h"
 
     /*! Modos de funcionamiento del sistema */
 
@@ -41,6 +42,10 @@
     {
     char *buffer; //buffer del sistema
     } frame_t;
+
+
+
+
 
 
 
